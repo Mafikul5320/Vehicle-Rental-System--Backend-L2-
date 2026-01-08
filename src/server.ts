@@ -1,12 +1,18 @@
 import express from 'express'
 import config from './config'
 import { initDB } from './config/DB'
+import { userRouter } from './modules/users/users.route';
 
-const app = express()
+const app = express();
+app.use(express.json())
+
+initDB();
 
 
 
-initDB()
+app.use("/api/v1/auth", userRouter)
+
+
 
 
 app.get('/', (req, res) => {
