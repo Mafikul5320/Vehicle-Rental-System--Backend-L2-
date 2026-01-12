@@ -16,7 +16,11 @@ app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/auth", authRouter)
 
 // Vehicles
-app.use("/api/v1/vehicles",VehicleRouter)
+app.use("/api/v1/vehicles", VehicleRouter);
+app.use("/api/v1/vehicles", VehicleRouter);
+app.use("/api/v1/vehicles", VehicleRouter);
+app.use("/api/v1/vehicles", VehicleRouter);
+app.use("/api/v1/vehicles", VehicleRouter)
 
 
 app.get('/', (req, res) => {
