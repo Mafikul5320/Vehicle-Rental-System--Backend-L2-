@@ -66,10 +66,16 @@ const updateUser = async (payload: Record<string, unknown>, user: JwtPayload, pa
     return result;
 };
 
+const deleteUser = async (payload: string) => {
+    const result = await pool.query(`DELETE FROM users WHERE id=$1 RETURNING *`, [payload]);
+    return result;
+}
+
 
 
 export const userService = {
     userCreate,
     allUser,
     updateUser,
+    deleteUser
 }

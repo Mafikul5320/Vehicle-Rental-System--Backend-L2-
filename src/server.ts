@@ -23,7 +23,8 @@ app.use("/api/v1/vehicles", VehicleRouter);
 app.use("/api/v1/vehicles", VehicleRouter)
 
 // user
-app.use("/api/v1/users", userRouter)
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/users", userRouter);
 
 
 app.get('/', (req, res) => {
