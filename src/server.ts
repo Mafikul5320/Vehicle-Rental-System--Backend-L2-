@@ -26,6 +26,9 @@ app.use("/api/v1/vehicles", VehicleRouter)
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/users", userRouter);
 
+// Booking 
+app.use("/api/v1/bookings");
+
 
 app.get('/', (req, res) => {
     res.send('Vehicle Rental System')
