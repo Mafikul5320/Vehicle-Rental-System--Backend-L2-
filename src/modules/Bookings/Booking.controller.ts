@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { BookingService } from "./Booking.service";
 
 const CreateBooking = async (req: Request, res: Response) => {
-    const result = await BookingService.CreateBooking()
+    const result = await BookingService.CreateBooking(req.body);
 
     try {
         res.send({
-            message: "User Deteted sucessfull",
+            message: "Vehicle Booking sucessfull",
             sucess: true,
-            data: result.rows[0]
+            data: result,
         })
 
     } catch (err: any) {
