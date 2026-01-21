@@ -29,6 +29,7 @@ app.use("/api/v1/users", userRouter);
 
 // Booking 
 app.use("/api/v1/bookings", BookingRouter);
+app.use("/api/v1/bookings", BookingRouter)
 
 
 app.get('/', (req, res) => {

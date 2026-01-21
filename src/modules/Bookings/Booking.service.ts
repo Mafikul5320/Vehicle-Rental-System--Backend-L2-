@@ -1,4 +1,6 @@
+import { JwtPayload } from "jsonwebtoken";
 import { pool } from "../../config/DB";
+import { response } from "express";
 
 const CreateBooking = async (payload: Record<string, unknown>) => {
     const { vehicle_id, rent_start_date, rent_end_date, customer_id } = payload;
@@ -66,6 +68,67 @@ const CreateBooking = async (payload: Record<string, unknown>) => {
     return response.rows[0];
 };
 
+const AllBooking = async (Currentuser: JwtPayload) => {
+    console.log(Currentuser)
+
+
+    if (Currentuser.role === "customer") {
+        const result = await pool.query(`SELECT * FROM Bookings WHERE customer_id=$1`, [Currentuser.id]);
+
+        const response = await pool.query(`SELECT 
+            b.id,
+            b.vehicle_id,
+            b.rent_start_date,
+            b.rent_end_date,
+            b.total_price,
+            b.status,
+
+            json_build_object(
+            "vehicle_name", v.vehicle_name,
+            "registration_number",  v.registration_number,
+            "type", v.type
+            ) AS vehicle
+
+            FROM Bookings b
+            JOIN users u ON b.customer_id = u.id
+            JOIN Vehicles v ON b.vehicle_id =v.id
+            WHERE b.id=$1
+            
+            `, [result.rows[0].id])
+        return response.rows;
+
+    }
+    if (Currentuser.role === "admin") {
+        const response = await pool.query(`SELECT 
+            b.id,
+            b.customer_id,
+            b.vehicle_id,
+            b.rent_start_date,
+            b.rent_end_date,
+            b.total_price,
+            b.status,
+
+            json_build_object(
+            "name", u.name,
+            "email", u.email
+            ) AS customer,
+
+            json_build_object(
+            "vehicle_name", v.vehicle_name,
+            "registration_number",  v.registration_number
+            ) AS vehicle
+
+            FROM Bookings b
+            JOIN users u ON b.customer_id = u.id
+            JOIN Vehicles v ON b.vehicle_id =v.id
+
+            
+            `)
+        return response.rows;
+    }
+}
+
 export const BookingService = {
     CreateBooking,
+    AllBooking
 }
