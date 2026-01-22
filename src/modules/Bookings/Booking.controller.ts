@@ -37,9 +37,29 @@ const AllBooking = async (req: Request, res: Response) => {
             error: err.message,
         })
     }
+};
+
+const UpdateBookiing = async (req: Request, res: Response) => {
+    const bookingId: number = Number(req.params.bookingId);
+    const result = await BookingService.UpdateBooking(req.body, req.user as JwtPayload, bookingId)
+
+    try {
+        res.send({
+            message: " Vehicle Update sucessfull",
+            sucess: true,
+            data: result,
+        })
+
+    } catch (err: any) {
+        res.status(500).json({
+            sucess: false,
+            error: err.message,
+        })
+    }
 }
 
 export const BookingController = {
     CreateBooking,
-    AllBooking
+    AllBooking,
+    UpdateBookiing
 }

@@ -126,9 +126,30 @@ const AllBooking = async (Currentuser: JwtPayload) => {
             `)
         return response.rows;
     }
+};
+
+const UpdateBooking = async (payload: Record<string, unknown>, user: JwtPayload, id: number) => {
+    const { status } = payload;
+    const today = new Date();
+    const result = await pool.query(`SELECT * FROM Bookings WHERE id=$1`, [id]);
+    console.log(result.rows[0].rent_start_date, today);
+
+    if (user.role === "customer") {
+        if (today <= result.rows[0].rent_start_date) {
+            throw new Error("Can't cancel Booking..")
+        } else {
+            const Upstatus = await pool.query(`UPDATE Bookings SET status=$1 WHERE id=$2 RETURNING *`, [status, id]);
+            return Upstatus.rows[0]
+        }
+    };
+    if (user.role === "admin") {
+
+    }
+
 }
 
 export const BookingService = {
     CreateBooking,
-    AllBooking
+    AllBooking,
+    UpdateBooking
 }
