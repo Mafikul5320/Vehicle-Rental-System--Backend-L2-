@@ -1,6 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
 import { pool } from "../../config/DB";
-import { response } from "express";
 
 const CreateBooking = async (payload: Record<string, unknown>) => {
     const { vehicle_id, rent_start_date, rent_end_date, customer_id } = payload;
@@ -132,24 +131,56 @@ const UpdateBooking = async (payload: Record<string, unknown>, user: JwtPayload,
     const { status } = payload;
     const today = new Date();
     const result = await pool.query(`SELECT * FROM Bookings WHERE id=$1`, [id]);
-    console.log(result.rows[0].rent_start_date, today);
 
-    if (user.role === "customer") {
-        if (today <= result.rows[0].rent_start_date) {
-            throw new Error("Can't cancel Booking..")
-        } else {
-            const Upstatus = await pool.query(`UPDATE Bookings SET status=$1 WHERE id=$2 RETURNING *`, [status, id]);
-            return Upstatus.rows[0]
-        }
-    };
-    if (user.role === "admin") {
-
+    if (result.rowCount === 0) {
+        throw new Error("Booking not found");
     }
 
+    console.log(result.rows[0].rent_start_date, today);
+    const startDate = new Date(result.rows[0].rent_start_date);
+
+
+    if (user.role === "customer") {
+        if (status !== "cancelled") {
+            throw new Error("Customer Only Cancel your Booking.")
+        }
+
+        if (today >= startDate) {
+            throw new Error("Cannot cancel booking after start date");
+        }
+
+    };
+
+    if (user.role === "admin") {
+        if (status !== "returned") {
+            throw new Error("Admin can only mark booking as returned");
+        };
+
+        await pool.query(`UPDATE Vehicles SET availability_status='available' WHERE id=$1 RETURNING *`, [result.rows[0].vehicle_id])
+
+    };
+
+    const updateBooking = await pool.query(`UPDATE Bookings SET status=$1 WHERE id=$2 RETURNING *`, [status, id]);
+
+    return updateBooking.rows[0];
+};
+
+const AutoReturnBookings = async () => {
+    const today = new Date();
+    const BookingReturn = await pool.query(`SELECT * FROM Bookings WHERE status='active' AND rent_end_date < $1`, [today]);
+
+    for (const Booking of BookingReturn.rows) {
+
+
+        await pool.query(`UPDATE Bookings SET status='returned' WHERE id=$1`, [Booking.id]);
+
+        await pool.query(`UPDATE Vehicles SET availability_status='available' WHERE id=$1`, [Booking.vehicle_id])
+    }
 }
 
 export const BookingService = {
     CreateBooking,
     AllBooking,
-    UpdateBooking
+    UpdateBooking,
+    AutoReturnBookings,
 }

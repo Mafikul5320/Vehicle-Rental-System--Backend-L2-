@@ -6,7 +6,7 @@ const router = Router();
 
 router.post("/", BookingController.CreateBooking);
 router.get("/", Middleware("customer", "admin"), BookingController.AllBooking);
-router.put("/:bookingId",  BookingController.UpdateBookiing);
+router.put("/:bookingId", Middleware("customer", "admin"), BookingController.UpdateBookiing);
 
 
 

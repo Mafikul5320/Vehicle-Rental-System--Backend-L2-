@@ -5,11 +5,18 @@ import { userRouter } from './modules/users/users.route';
 import { authRouter } from './modules/auth/auth.route';
 import { VehicleRouter } from './modules/Vehicles/Vehicle.route';
 import { BookingRouter } from './modules/Bookings/Booking.route';
+import cron from "node-cron";
+import { BookingService } from './modules/Bookings/Booking.service';
 
 const app = express();
 app.use(express.json())
 
 initDB();
+
+cron.schedule("0 0 * * *", () => {
+    console.log("Running auto-return Booking...");
+    BookingService.AutoReturnBookings()
+});
 
 
 // Authentication
