@@ -60,7 +60,7 @@ const updateUser = async (payload: Record<string, unknown>, user: JwtPayload, pa
 
     value.push(paramsId);
     console.log(value)
-    const result = await pool.query(`UPDATE users SET ${update.join(", ")} WHERE id=$${indx}`, value);
+    const result = await pool.query(`UPDATE users SET ${update.join(", ")} WHERE id=$${indx} RETURNING *`, value);
 
 
     return result;

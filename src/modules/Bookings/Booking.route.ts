@@ -4,7 +4,7 @@ import Middleware from "../../middleware/auth";
 
 const router = Router();
 
-router.post("/", BookingController.CreateBooking);
+router.post("/",Middleware("customer", "admin"), BookingController.CreateBooking);
 router.get("/", Middleware("customer", "admin"), BookingController.AllBooking);
 router.put("/:bookingId", Middleware("customer", "admin"), BookingController.UpdateBookiing);
 

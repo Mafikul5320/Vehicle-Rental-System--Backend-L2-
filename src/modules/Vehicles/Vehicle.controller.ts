@@ -6,8 +6,8 @@ const VehicleCreate = async (req: Request, res: Response) => {
     try {
 
         console.log(result.rows[0]);
-        res.send({
-            message: "vehicle insert sucessfull",
+        res.status(201).send({
+            message: "Vehicle created successfully",
             sucess: true,
             data: result.rows[0]
         })
@@ -26,11 +26,19 @@ const allVehicle = async (req: Request, res: Response) => {
     try {
 
         console.log(result.rows[0]);
-        res.send({
-            message: "user Get sucessfull",
-            sucess: true,
-            data: result.rows
-        })
+        if (result.rows.length) {
+            res.status(200).send({
+                message: "Vehicles retrieved successfully",
+                sucess: true,
+                data: result.rows
+            })
+        } else {
+            res.status(200).send({
+                sucess: true,
+                message: "No vehicles found",
+                data: result.rows
+            })
+        }
 
     } catch (err: any) {
         res.status(500).json({
@@ -48,14 +56,15 @@ const singleVehicle = async (req: Request, res: Response) => {
         console.log(result.rows[0]);
         if (result.rows.length) {
             res.send({
-                message: "Single Vehicle Get sucessfull",
+                message: "Vehicle retrieved successfully",
                 sucess: true,
                 data: result.rows[0]
             })
         } else {
             res.send({
+                sucess: true,
                 message: "Vehicle Not found",
-                sucess: false,
+                data: result.rows
             })
         }
 
@@ -74,7 +83,7 @@ const updateVehicle = async (req: Request, res: Response) => {
 
         console.log(result.rows[0]);
         res.send({
-            message: "vehicle Update sucessfull",
+            message: "Vehicle updated successfully",
             sucess: true,
             data: result.rows[0]
         })
@@ -92,11 +101,9 @@ const deleteVehicle = async (req: Request, res: Response) => {
     const result = await vehicleService.deleteVehicle(id)
     try {
 
-        console.log(result.rows[0]);
         res.send({
-            message: "vehicle delete sucessfull",
             sucess: true,
-            data: result.rows[0]
+            message: "Vehicle deleted successfully",
         })
 
     } catch (err: any) {

@@ -26,7 +26,7 @@ const updateVehicle = async (id: number, payload: Record<string, unknown>) => {
 }
 
 const deleteVehicle = async (id: number) => {
-    const result = await pool.query(`DELETE FROM Vehicles WHERE id=$1 RETURNING *`, [id]);
+    const result = await pool.query(`DELETE FROM Vehicles WHERE id=$1`, [id]);
     return result;
 }
 

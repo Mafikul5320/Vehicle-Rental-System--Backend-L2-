@@ -7,8 +7,8 @@ const userCreate = async (req: Request, res: Response) => {
     try {
 
         console.log(result.rows[0]);
-        res.send({
-            message: "user insert sucessfull",
+        res.status(201).send({
+            message: "User registered successfully",
             sucess: true,
             data: result.rows[0]
         })
@@ -25,8 +25,8 @@ const allUsers = async (req: Request, res: Response) => {
     const result = await userService.allUser();
 
     try {
-        res.send({
-            message: "All user get sucessfull",
+        res.status(200).send({
+            message: "Users retrieved successfully",
             sucess: true,
             data: result.rows
         })
@@ -43,6 +43,7 @@ const updateUser = async (req: Request, res: Response) => {
     const user = req.user;
     const paramsId = Number(req.params.userId)
     const result = await userService.updateUser(req.body, user as JwtPayload, paramsId);
+    console.log(result)
     try {
 
         console.log(result.rows[0]);
@@ -68,7 +69,7 @@ const deleteUser = async (req: Request, res: Response) => {
 
     try {
         res.send({
-            message: "User Deteted sucessfull",
+            message: "User deleted successfully",
             sucess: true,
             data: result.rows[0]
         })

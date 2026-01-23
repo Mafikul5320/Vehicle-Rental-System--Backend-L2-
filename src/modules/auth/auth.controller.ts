@@ -6,7 +6,7 @@ const loginUser = async (req: Request, res: Response) => {
     try {
         if (result) {
             res.send({
-                message: "user Find sucessfull",
+                message: "user Login sucessfull",
                 sucess: true,
                 data: result
             })
